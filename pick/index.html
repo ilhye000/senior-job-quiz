@@ -664,16 +664,16 @@ const TYPE = {
 };
 
 
-/* 사업 가중: 최근 90일 수강 규모(로그, 60%) + 결제 전환율(40%) → 0~1 → 최대 +2점
+/* 사업 가중: 결제 전환율(60%) + 최근 90일 수강 규모(로그, 40%) → 0~1 → 최대 +2점
    같은 성향 안에서 잘 팔리는 과목이 위로 오게 하되, 성향이 안 맞는 과목을 끌어올릴 만큼 크진 않게 */
 const BIZ_W = 2;
 const _bizVals = Object.values(BIZ);
 const _logMax = Math.log10(Math.max(..._bizVals.map(b=>b.enr))+1);
 const _payMax = Math.max(..._bizVals.map(b=>b.pay));
-const _medBiz = (()=>{ const a=_bizVals.map(b=>0.6*Math.log10(b.enr+1)/_logMax + 0.4*b.pay/_payMax).sort((x,y)=>x-y); return a[Math.floor(a.length/2)]; })();
+const _medBiz = (()=>{ const a=_bizVals.map(b=>0.4*Math.log10(b.enr+1)/_logMax + 0.6*b.pay/_payMax).sort((x,y)=>x-y); return a[Math.floor(a.length/2)]; })();
 function bizBonus(c){
   const b = BIZ[c.id];
-  const s = b ? 0.6*Math.log10(b.enr+1)/_logMax + 0.4*b.pay/_payMax : _medBiz;
+  const s = b ? 0.4*Math.log10(b.enr+1)/_logMax + 0.6*b.pay/_payMax : _medBiz;
   return s * BIZ_W;
 }
 
